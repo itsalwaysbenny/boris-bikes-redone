@@ -3,6 +3,12 @@ require 'bike'
 
 describe DockingStation do
 
+  it "releases working bikes" do
+    subject.dock Bike.new
+    bike = subject.release_bike
+    expect(bike).to be_working
+  end
+
   it "responds to release_bike" do
     expect(DockingStation.new).to respond_to :release_bike
   end
@@ -11,9 +17,9 @@ describe DockingStation do
     subject { DockingStation.new }
     let(:bike) { Bike.new }
     it "defaults capacity" do
-      ds = DockingStation.new
-      20.times { ds.dock(:bike) }
-      expect{ ds.dock(:bike) }.to raise_error "No space available, try a different docking station"
+      subject { DockingStation.new }
+      described_class::DEFAULT_CAPACITY.times { subject.dock(:bike) }
+      expect{ subject.dock(:bike) }.to raise_error "No space available, try a different docking station"
     end
   end
 
@@ -51,9 +57,20 @@ describe DockingStation do
 
   describe "initialization" do
     it "has a variable capacity" do
-      docking_station = DockingStation.new
-      described_class::DEFAULT_CAPACITY.times { docking_station.dock Bike.new }
-      expect{ docking_station.dock Bike.new }.to raise_error "No space available, try a different docking station"
+      subject { DockingStation.new }
+      described_class::DEFAULT_CAPACITY.times { subject.dock Bike.new }
+      expect{ subject.dock Bike.new }.to raise_error "No space available, try a different docking station"
+    end
+  end
+
+  describe "#release_bike" do
+    it "will not release a broken bike" do
+      ds = DockingStation.new
+      broken_bike = Bike.new
+      broken_bike.report_broken
+      ds.dock(broken_bike)
+      expect { ds.release_bike }.to raise_error "No bikes available"
+
     end
   end
 
