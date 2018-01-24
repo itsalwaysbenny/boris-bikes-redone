@@ -17,8 +17,13 @@ class DockingStation
   end
 
   def dock(bike)
-    fail "No space available, try a different docking station" if full?
-      bike.broken? ? broken_bikes << bike : bikes << bike
+    if full?
+      fail "No space available, try a different docking station"
+    elsif bike.broken?
+      broken_bikes << bike
+    else
+      bikes << bike
+    end
   end
 
   private

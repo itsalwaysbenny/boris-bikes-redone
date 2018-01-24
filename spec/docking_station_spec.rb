@@ -15,20 +15,20 @@ describe DockingStation do
 
   describe "initialization" do
     subject { DockingStation.new }
-    let(:bike) { Bike.new }
     it "defaults capacity" do
+      bike =  double( :bike, broken?: false )
       subject { DockingStation.new }
-      described_class::DEFAULT_CAPACITY.times { subject.dock(:bike) }
-      expect{ subject.dock(:bike) }.to raise_error "No space available, try a different docking station"
+      described_class::DEFAULT_CAPACITY.times { subject.dock(bike) }
+      expect { subject.dock(bike) }.to raise_error "No space available, try a different docking station"
     end
   end
 
   describe "#release_bike" do
     subject { DockingStation.new }
-    let(:bike) { Bike.new }
     it "releases a bike" do
-      subject.dock(:bike)
-      expect(subject.release_bike).to eq :bike
+      bike =  double( :bike, broken?: false )
+      subject.dock(bike)
+      expect(subject.release_bike).to eq bike
     end
   end
 
